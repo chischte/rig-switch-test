@@ -69,7 +69,7 @@ void setup()
 {
   Serial.begin(115200); //start serial connection
 
-  //nextionSetup();
+  nextionSetup();
 
   Serial.println("EXIT SETUP");
 }
