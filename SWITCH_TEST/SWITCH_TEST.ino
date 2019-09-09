@@ -17,7 +17,7 @@ Implement debounce algorithm
 */
 
 #include <Nextion.h>  // https://github.com/itead/ITEADLIB_Arduino_Nextion
-
+#include <Debounce.h> // ...add github link
 //*****************************************************************************
 //DECLARATION OF VARIABLES / DATA TYPES
 //*****************************************************************************
@@ -29,11 +29,13 @@ Implement debounce algorithm
 //*****************************************************************************
 
 //KNOBS AND POTENTIOMETERS:
-const byte TEST_SWITCH = 2;
-const byte MOTOR_RELAY = 3;
+const byte TEST_SWITCH_PIN = 2;
+const byte MOTOR_RELAY_PIN = 3;
 //SENSORS:
 
 //OTHER VARIABLES:
+boolean currentButtonState;
+boolean previousButtonState;
 boolean machineRunning = false;
 boolean stepMode = true;
 boolean clearancePlayPauseToggle = true;
@@ -53,6 +55,7 @@ unsigned long runtime;
 unsigned long runtimeStopwatch;
 unsigned long prev_time;
 
+Debounce testSwitch(TEST_SWITCH_PIN);
 
 //*****************************************************************************
 //******************######**#######*#######*#******#*######********************
@@ -67,7 +70,7 @@ void setup()
 
   nextionSetup();
 
-  pinMode(TEST_SWITCH, INPUT);
+ 
   pinMode(MOTOR_RELAY, OUTPUT);
 
   Serial.println("EXIT SETUP");
@@ -84,8 +87,9 @@ void loop()
 
   digitalWrite(MOTOR_RELAY, !machineRunning);
 
-  NextionLoop();
-  EEPROM_Update();
+runMainTestCycle();
+NextionLoop();
+EEPROM_Update();
 
   //runtime = millis() - runtimeStopwatch;
   //Serial.println(runtime);
