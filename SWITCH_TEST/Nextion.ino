@@ -1,14 +1,14 @@
 /*
  * *****************************************************************************
- * nextion.ino
- * configuration of the Nextion touch display
- * Michael Wettstein
- * September 2019, Zürich
+   nextion.ino
+   configuration of the Nextion touch display
+   Michael Wettstein
+   September 2019, Zürich
  * *****************************************************************************
- * an xls-sheet to generate Nextion events can be found here:
- * https://github.com/chischte/push-type-rig/PUSHTYPE_NEXTION/
+   an xls-sheet to generate Nextion events can be found here:
+   https://github.com/chischte/push-type-rig/PUSHTYPE_NEXTION/
  * *****************************************************************************
- */
+*/
 
 // Include the nextion library (the official one) https://github.com/itead/ITEADLIB_Arduino_Nextion
 // Make sure you edit the NexConfig.h file on the library folder to set the correct serial port for the display.
@@ -44,7 +44,7 @@ bool reset_stopwatch_active;
 bool nex_prev_stepMode = true;
 
 unsigned int stopped_button_pushtime;
- unsigned long counter_reset_stopwatch;
+unsigned long counter_reset_stopwatch;
 unsigned long nex_prev_longtimeCounter;
 unsigned long nex_prev_shorttimeCounter;
 //**************************************************************************************
@@ -66,10 +66,10 @@ char buffer[100] =
 //TOUCH EVENT LIST //DECLARATION OF TOUCH EVENTS TO BE MONITORED
 //**************************************************************************************
 NexTouch *nex_listen_list[] =
-{   &nex_switch_play_pause, 
+{ &nex_switch_play_pause,
 
-    NULL //String terminated
-    };
+  NULL //String terminated
+};
 //**************************************************************************************
 //END OF TOUCH EVENT LIST
 //**************************************************************************************
@@ -90,8 +90,8 @@ void nextionSetup()
   //**************************************************************************************
   //REGISTER THE EVENT CALLBACK FUNCTIONS
   //**************************************************************************************
-   nex_switch_play_pause.attachPush(nex_switch_play_pausePushCallback);
- 
+  nex_switch_play_pause.attachPush(nex_switch_play_pausePushCallback);
+
   //**************************************************************************************
   //END OF REGISTER
   //**************************************************************************************
@@ -101,27 +101,27 @@ void nextionSetup()
 }  //END OF NEXTION SETUP
 
 //**************************************************************************************
-void NextionLoop()
+void nextionLoop()
 //**************************************************************************************
 { //START NEXTION LOOP
 
-    if (nex_prev_shorttimeCounter != shorttimeCounter)
+  if (nex_prev_shorttimeCounter != shorttimeCounter)
+  {
+    Serial2.print("t0.txt=");
+    Serial2.print("\"");
+    Serial2.print(shorttimeCounter);
+    Serial2.print("\"");
+    send_to_nextion();
+    nex_prev_shorttimeCounter = shorttimeCounter;
+  }
+  if (reset_stopwatch_active == true)
+  {
+    if (millis() - counter_reset_stopwatch > 5000)
     {
-      Serial2.print("t0.txt=");
-      Serial2.print("\"");
-      Serial2.print(shorttimeCounter);
-      Serial2.print("\"");
-      send_to_nextion();
-      nex_prev_shorttimeCounter = shorttimeCounter;
+      shorttimeCounter = 0;
+      longtimeCounter = 0;
     }
-    if (reset_stopwatch_active == true)
-    {
-      if (millis() - counter_reset_stopwatch > 5000)
-      {
-        shorttimeCounter = 0;
-        longtimeCounter = 0;
-      }
-    }
+  }
 
 }    //END OF NEXTION LOOP
 
@@ -137,7 +137,7 @@ void nex_switch_play_pausePushCallback(void *ptr)
   }
   if (machineRunning == false)
   {
-   
+
   }
   nex_state_machineRunning = !nex_state_machineRunning;
 }

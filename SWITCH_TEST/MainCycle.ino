@@ -1,6 +1,6 @@
-void RunMainTestCycle()
+void runMainTestCycle()
 {
-  currentButtonState = testSwitch.requestButtonState;
+ // currentButtonState = testSwitch.requestButtonState;
 
   if (currentButtonState != previousButtonState)
   {
@@ -8,3 +8,4 @@ void RunMainTestCycle()
     longtimeCounter++;
     previousButtonState = currentButtonState;
   }
+}

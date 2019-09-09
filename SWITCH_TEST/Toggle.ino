@@ -1,19 +1,16 @@
 int toggle_on_off()
 
 {
-
   //START/STOP TEST_RIG
   //**************************************************************************
-  if (debounced_buttonstate == HIGH && toggleclearance == true)
+  if (debouncedButtonState == HIGH && toggleClearance == true)
   {
-    machine_running = !machine_running;
-    toggleclearance = false;
+    machineRunning = !machineRunning;
+    toggleClearance = false;
   }
 
-  if (debounced_buttonstate == LOW)
+  if (debouncedButtonState == LOW)
   {
-
-    toggleclearance = true ;
+    toggleClearance = true ;
   }
-  digitalWrite((blue_light), machine_running);
 }

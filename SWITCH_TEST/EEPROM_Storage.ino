@@ -1,16 +1,16 @@
 /*
  * *****************************************************************************
- * EEPROM_storage.ino
- * Function to store long values on EEPROM memory
- * Michael Wettstein
- * September 2019, Zürich
+   EEPROM_storage.ino
+   Function to store long values on EEPROM memory
+   Michael Wettstein
+   September 2019, Zürich
  * *****************************************************************************
- * EEPROM size:4096 bytes ATmega2560.
- * The EEPROM memory has a specified lifetime of 100,000 write/erase cycles
- * The storage location will be changed after 100,000 cycles
- * Storage data Type unsigned long (4Bytes)
+   EEPROM size:4096 bytes ATmega2560.
+   The EEPROM memory has a specified lifetime of 100,000 write/erase cycles
+   The storage location will be changed after 100,000 cycles
+   Storage data Type unsigned long (4Bytes)
  * *****************************************************************************
- */
+*/
 
 //*****************************************************************************
 //STORAGE VARIABLES AND ADRESSES:

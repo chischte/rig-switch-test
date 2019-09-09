@@ -9,11 +9,9 @@
  * *****************************************************************************
 */
 /*
-TODO:
-Write EEPROM library
-Implement debounce algorithm
-
-
+  TODO:
+  Write EEPROM library
+  Implement debounce algorithm
 */
 
 #include <Nextion.h>  // https://github.com/itead/ITEADLIB_Arduino_Nextion
@@ -21,7 +19,7 @@ Implement debounce algorithm
 //*****************************************************************************
 //DECLARATION OF VARIABLES / DATA TYPES
 //*****************************************************************************
-//boolean (true/false)
+//bool (true/false)
 //byte (0-255)
 //int   (-32,768 to 32,767) / unsigned int: 0 to 65,535
 //long  (-2,147,483,648 to 2,147,483,647)
@@ -34,14 +32,17 @@ const byte MOTOR_RELAY_PIN = 3;
 //SENSORS:
 
 //OTHER VARIABLES:
-boolean currentButtonState;
-boolean previousButtonState;
-boolean machineRunning = false;
-boolean stepMode = true;
-boolean clearancePlayPauseToggle = true;
-boolean clearanceNextStep = false;
-boolean errorBlink = false;
-boolean sealAvailable = false;
+bool debouncedButtonState;
+bool currentButtonState;
+bool previousButtonState;
+bool machineRunning = false;
+bool stepMode = true;
+bool clearancePlayPauseToggle = true;
+bool clearanceNextStep = false;
+bool errorBlink = false;
+bool sealAvailable = false;
+bool toggleClearance;
+//bool machineRunning;
 
 byte cycleStep = 1;
 byte nexPrevCycleStep;
@@ -68,10 +69,7 @@ void setup()
 {
   Serial.begin(115200); //start serial connection
 
-  nextionSetup();
-
- 
-  pinMode(MOTOR_RELAY, OUTPUT);
+  //nextionSetup();
 
   Serial.println("EXIT SETUP");
 }
@@ -85,11 +83,10 @@ void setup()
 void loop()
 {
 
-  digitalWrite(MOTOR_RELAY, !machineRunning);
 
-runMainTestCycle();
-NextionLoop();
-EEPROM_Update();
+  runMainTestCycle();
+  //nextionLoop();
+  EEPROM_Update();
 
   //runtime = millis() - runtimeStopwatch;
   //Serial.println(runtime);
