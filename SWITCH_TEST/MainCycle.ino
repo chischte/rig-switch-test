@@ -1,0 +1,5 @@
+void RunMainTestCycle()
+{
+  shorttimeCounter++;
+  longtimeCounter++;
+}
