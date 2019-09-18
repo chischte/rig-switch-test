@@ -32,6 +32,7 @@
 // DECLARATION OF VARIABLES
 //*****************************************************************************
 bool resetStopwatchActive = false;
+bool nextionPlayPauseButtonState;
 bool counterReseted = false;
 int currentPage = 0;
 unsigned long counterResetStopwatch;
@@ -87,6 +88,11 @@ void nextionSetup()
     //*****************************************************************************
     delay(2000);
     send_to_nextion();
+
+    // TOGGLE APPEARANCE OF PLAY/PAUSE BUTTON:
+    Serial2.print("click bt0,1");        // click button
+    send_to_nextion();
+
     Serial.println("END OF NEXTION SETUP");
 
 }  // END OF NEXTION SETUP
