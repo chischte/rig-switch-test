@@ -3,15 +3,12 @@
  * SWITCH_TEST
  * *****************************************************************************
  * Program for an endurance test of a mechanical switch
+ * The switch will be pushed 100'000 times or more.
+ * The number of pushes will be counted and displayed.
  * *****************************************************************************
  * Michael Wettstein
  * September 2019, Zürich
  * *****************************************************************************
- */
-
-/*
- * TODO:
- * Dont start/stop the machine if button is pushed for a counter reset
  */
 
 #include <Nextion.h>         // https://github.com/itead/ITEADLIB_Arduino_Nextion
@@ -36,8 +33,10 @@ EEPROM_Counter switchCounter(eepromSize, numberOfValues);
 // CREATE THE TIMEOUT TIMER:
 Insomnia timeout(5000);
 
+// CREATE A BLINK DELAY:
+Insomnia blinkDelay;
 //*****************************************************************************
-// DECLARATION OF VARIABLES / DATA TYPES
+// DECLARATION OF VARIABLES
 //*****************************************************************************
 // bool (true/false)
 // byte (0-255)
@@ -48,27 +47,17 @@ Insomnia timeout(5000);
 
 // KNOBS AND POTENTIOMETERS:
 const byte TEST_SWITCH_PIN = 2;
+Debounce testSwitch(TEST_SWITCH_PIN);
 const byte MOTOR_RELAY_PIN = 50;
-// SENSORS:
 
+// SENSORS:
 // n.a.
 
 // OTHER VARIABLES:
-bool debouncedButtonState;
 bool previousButtonState;
 bool previousMachineState;
 bool machineRunning = false;
 bool buttonBlinkEnabled = false;
-
-int buttonBlinkTime = 500;
-
-unsigned long runtime;
-unsigned long runtimeStopwatch;
-unsigned long timeOutWatch;
-unsigned int timeOutTime = 5000;
-unsigned long previousTime;
-
-Debounce testSwitch(TEST_SWITCH_PIN);
 
 //*****************************************************************************
 void updateDisplayCounter() {
@@ -79,12 +68,12 @@ void updateDisplayCounter() {
   Serial2.print("\"");
   send_to_nextion();
 }
+
 void buttonBlink() {
   if (buttonBlinkEnabled) {
-    if (millis() - previousTime > buttonBlinkTime) {
-      Serial2.print("click bt0,1");        // click button
+    if (blinkDelay.delayTimeUp(500)) {
+      Serial2.print("click bt0,1"); // click button
       send_to_nextion();
-      previousTime = millis();
     }
   }
 }
@@ -113,6 +102,7 @@ void setup() {
 //*****************************************************************************
 
 void loop() {
+
   // GET INFOS FROM TOUCH DISPLAY:
   nextionLoop();
 
@@ -149,21 +139,14 @@ void loop() {
     previousButtonState = debouncedButtonState;
   }
 
-  //Serial.print("MACHINE STATE:");
-  //Serial.println(machineRunning);
-
   // SWITCH OFF IF TIME-OUT IS REACHED
-  if (timeout.active()) { // returns true if timeout is active
-    if (timeout.timedOut()) { // returns true if timeout time has been reached
+  if (timeout.active()) {
+    if (timeout.timedOut()) {
       machineRunning = false;
       buttonBlinkEnabled = true;
       Serial.println("TIMEOUT-REACHED");
     }
   }
-  buttonBlink();
-
-//runtime = millis() - runtimeStopwatch;
-//Serial.println(runtime);
-//runtimeStopwatch = millis();
-  //delay(500);
+  // LET DE DISPLAY BLINK IF THE TEST SWICH FAILED:
+  buttonBlink(); // button blinks only if blink has been enabled
 }
