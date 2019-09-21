@@ -17,7 +17,7 @@
 #include <Nextion.h>         // https://github.com/itead/ITEADLIB_Arduino_Nextion
 #include <Debounce.h>        // https://github.com/chischte/debounce-library.git
 #include <EEPROM_Counter.h>  // https://github.com/chischte/eeprom-counter-library.git
-#include <Timeout.h>         // https://github.com/chischte/timeout-library.git
+#include <Insomnia.h>        // https://github.com/chischte/insomnia-delay-library.git
 
 enum counter {
     longTimeCounter, // name of the counter
@@ -34,7 +34,7 @@ int eepromSize = 4096;
 EEPROM_Counter switchCounter(eepromSize, numberOfValues);
 
 // CREATE THE TIMEOUT TIMER:
-Timeout timeout(5000);
+Insomnia timeout(5000);
 
 //*****************************************************************************
 // DECLARATION OF VARIABLES / DATA TYPES
