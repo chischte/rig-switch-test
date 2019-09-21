@@ -20,8 +20,8 @@
 #include <Insomnia.h>        // https://github.com/chischte/insomnia-delay-library.git
 
 enum counter {
-    longTimeCounter, // name of the counter
-    endOfEnum //end of the counter list
+  longTimeCounter, // name of the counter
+  endOfEnum //end of the counter list
 };
 int numberOfValues = endOfEnum;
 
@@ -72,21 +72,21 @@ Debounce testSwitch(TEST_SWITCH_PIN);
 
 //*****************************************************************************
 void updateDisplayCounter() {
-    long newValue = switchCounter.getValue(longTimeCounter);
-    Serial2.print("t0.txt=");
-    Serial2.print("\"");
-    Serial2.print(newValue);
-    Serial2.print("\"");
-    send_to_nextion();
+  long newValue = switchCounter.getValue(longTimeCounter);
+  Serial2.print("t0.txt=");
+  Serial2.print("\"");
+  Serial2.print(newValue);
+  Serial2.print("\"");
+  send_to_nextion();
 }
 void buttonBlink() {
-    if (buttonBlinkEnabled) {
-        if (millis() - previousTime > buttonBlinkTime) {
-            Serial2.print("click bt0,1");        // click button
-            send_to_nextion();
-            previousTime = millis();
-        }
+  if (buttonBlinkEnabled) {
+    if (millis() - previousTime > buttonBlinkTime) {
+      Serial2.print("click bt0,1");        // click button
+      send_to_nextion();
+      previousTime = millis();
     }
+  }
 }
 //*****************************************************************************
 //******************######**#######*#######*#******#*######********************
@@ -96,13 +96,13 @@ void buttonBlink() {
 //*****************######***######*****#*****######**#*************************
 //*****************************************************************************
 void setup() {
-    Serial.begin(9600); // start serial connection
-    pinMode(TEST_SWITCH_PIN, INPUT_PULLUP);
-    pinMode(MOTOR_RELAY_PIN, OUTPUT);
-    digitalWrite(MOTOR_RELAY_PIN, HIGH);
-    nextionSetup();
-    updateDisplayCounter();
-    Serial.println("EXIT SETUP");
+  Serial.begin(9600); // start serial connection
+  pinMode(TEST_SWITCH_PIN, INPUT_PULLUP);
+  pinMode(MOTOR_RELAY_PIN, OUTPUT);
+  digitalWrite(MOTOR_RELAY_PIN, HIGH);
+  nextionSetup();
+  updateDisplayCounter();
+  Serial.println("EXIT SETUP");
 }
 //*****************************************************************************
 //********************#*********#####***#####***######*************************
@@ -113,58 +113,57 @@ void setup() {
 //*****************************************************************************
 
 void loop() {
-    // GET INFOS FROM TOUCH DISPLAY:
-    nextionLoop();
+  // GET INFOS FROM TOUCH DISPLAY:
+  nextionLoop();
 
-    // DETECT IF MACHINE HAS BEEN SWITCHED ON:
-    if (machineRunning) {
-        if (machineRunning == !previousMachineState) {
-            timeout.setActive(machineRunning);
-            Serial.println("MACHINE SWITCHED ON");
-            previousMachineState=machineRunning;
-        }
+  // DETECT IF MACHINE HAS BEEN SWITCHED ON:
+  if (machineRunning) {
+    if (machineRunning == !previousMachineState) {
+      timeout.setActive(machineRunning);
+      Serial.println("MACHINE SWITCHED ON");
+      previousMachineState = machineRunning;
     }
+  }
 
-    // DETECT IF MACHINE HAS BEEN SWITCHED OFF:
-        if (!machineRunning) {
-            if (machineRunning == !previousMachineState) {
-                timeout.setActive(machineRunning);
-                Serial.println("MACHINE SWITCHED OFF");
-                previousMachineState=machineRunning;
-            }
-        }
-
-
-    // SWITCH MOTOR ON AND OFF:
-    digitalWrite(MOTOR_RELAY_PIN, !machineRunning);
-
-    // GET SIGNAL FROM TEST SWITCH AND COUNT IT:
-    bool debouncedButtonState = testSwitch.requestButtonState();
-    if (previousButtonState != debouncedButtonState) {
-        if (debouncedButtonState == LOW) {
-            switchCounter.countOneUp(longTimeCounter);
-            updateDisplayCounter();
-            timeout.resetTime();
-            buttonBlinkEnabled = false;
-        }
-        previousButtonState = debouncedButtonState;
+  // DETECT IF MACHINE HAS BEEN SWITCHED OFF:
+  if (!machineRunning) {
+    if (machineRunning == !previousMachineState) {
+      timeout.setActive(machineRunning);
+      Serial.println("MACHINE SWITCHED OFF");
+      previousMachineState = machineRunning;
     }
+  }
 
-    //Serial.print("MACHINE STATE:");
-    //Serial.println(machineRunning);
+  // SWITCH MOTOR ON AND OFF:
+  digitalWrite(MOTOR_RELAY_PIN, !machineRunning);
 
-    // SWITCH OFF IF TIME-OUT IS REACHED
-    if (timeout.active()) { // returns true if timeout is active
-        if (timeout.timedOut()) { // returns true if timeout time has been reached
-            machineRunning = false;
-            buttonBlinkEnabled = true;
-            Serial.println("TIMEOUT-REACHED");
-        }
+  // GET SIGNAL FROM TEST SWITCH AND COUNT IT:
+  bool debouncedButtonState = testSwitch.requestButtonState();
+  if (previousButtonState != debouncedButtonState) {
+    if (debouncedButtonState == LOW) {
+      switchCounter.countOneUp(longTimeCounter);
+      updateDisplayCounter();
+      timeout.resetTime();
+      buttonBlinkEnabled = false;
     }
-    buttonBlink();
+    previousButtonState = debouncedButtonState;
+  }
+
+  //Serial.print("MACHINE STATE:");
+  //Serial.println(machineRunning);
+
+  // SWITCH OFF IF TIME-OUT IS REACHED
+  if (timeout.active()) { // returns true if timeout is active
+    if (timeout.timedOut()) { // returns true if timeout time has been reached
+      machineRunning = false;
+      buttonBlinkEnabled = true;
+      Serial.println("TIMEOUT-REACHED");
+    }
+  }
+  buttonBlink();
 
 //runtime = millis() - runtimeStopwatch;
 //Serial.println(runtime);
 //runtimeStopwatch = millis();
-    //delay(500);
+  //delay(500);
 }
