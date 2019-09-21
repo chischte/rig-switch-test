@@ -147,6 +147,6 @@ void loop() {
       Serial.println("TIMEOUT-REACHED");
     }
   }
-  // LET DE DISPLAY BLINK IF THE TEST SWICH FAILED:
+  // LET THE DISPLAY BLINK IF THE TEST SWITCH FAILED:
   buttonBlink(); // button blinks only if blink has been enabled
 }
