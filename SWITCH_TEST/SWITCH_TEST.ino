@@ -3,25 +3,22 @@
  * SWITCH_TEST
  * *****************************************************************************
  * Program for an endurance test of a mechanical switch
+ * The switch will be pushed 100'000 times or more.
+ * The number of pushes will be counted and displayed.
  * *****************************************************************************
  * Michael Wettstein
  * September 2019, Zürich
  * *****************************************************************************
  */
 
-/*
- * TODO:
- * Dont start/stop the machine if button is pushed for a counter reset
- */
-
 #include <Nextion.h>         // https://github.com/itead/ITEADLIB_Arduino_Nextion
 #include <Debounce.h>        // https://github.com/chischte/debounce-library.git
 #include <EEPROM_Counter.h>  // https://github.com/chischte/eeprom-counter-library.git
-#include <Timeout.h>         // https://github.com/chischte/timeout-library.git
+#include <Insomnia.h>        // https://github.com/chischte/insomnia-delay-library.git
 
 enum counter {
-    longTimeCounter, // name of the counter
-    endOfEnum //end of the counter list
+  longTimeCounter, // name of the counter
+  endOfEnum //end of the counter list
 };
 int numberOfValues = endOfEnum;
 
@@ -34,10 +31,12 @@ int eepromSize = 4096;
 EEPROM_Counter switchCounter(eepromSize, numberOfValues);
 
 // CREATE THE TIMEOUT TIMER:
-Timeout timeout(5000);
+Insomnia timeout(5000);
 
+// CREATE A BLINK DELAY:
+Insomnia blinkDelay;
 //*****************************************************************************
-// DECLARATION OF VARIABLES / DATA TYPES
+// DECLARATION OF VARIABLES
 //*****************************************************************************
 // bool (true/false)
 // byte (0-255)
@@ -48,45 +47,35 @@ Timeout timeout(5000);
 
 // KNOBS AND POTENTIOMETERS:
 const byte TEST_SWITCH_PIN = 2;
+Debounce testSwitch(TEST_SWITCH_PIN);
 const byte MOTOR_RELAY_PIN = 50;
-// SENSORS:
 
+// SENSORS:
 // n.a.
 
 // OTHER VARIABLES:
-bool debouncedButtonState;
 bool previousButtonState;
 bool previousMachineState;
 bool machineRunning = false;
 bool buttonBlinkEnabled = false;
 
-int buttonBlinkTime = 500;
-
-unsigned long runtime;
-unsigned long runtimeStopwatch;
-unsigned long timeOutWatch;
-unsigned int timeOutTime = 5000;
-unsigned long previousTime;
-
-Debounce testSwitch(TEST_SWITCH_PIN);
-
 //*****************************************************************************
 void updateDisplayCounter() {
-    long newValue = switchCounter.getValue(longTimeCounter);
-    Serial2.print("t0.txt=");
-    Serial2.print("\"");
-    Serial2.print(newValue);
-    Serial2.print("\"");
-    send_to_nextion();
+  long newValue = switchCounter.getValue(longTimeCounter);
+  Serial2.print("t0.txt=");
+  Serial2.print("\"");
+  Serial2.print(newValue);
+  Serial2.print("\"");
+  send_to_nextion();
 }
+
 void buttonBlink() {
-    if (buttonBlinkEnabled) {
-        if (millis() - previousTime > buttonBlinkTime) {
-            Serial2.print("click bt0,1");        // click button
-            send_to_nextion();
-            previousTime = millis();
-        }
+  if (buttonBlinkEnabled) {
+    if (blinkDelay.delayTimeUp(500)) {
+      Serial2.print("click bt0,1"); // click button
+      send_to_nextion();
     }
+  }
 }
 //*****************************************************************************
 //******************######**#######*#######*#******#*######********************
@@ -114,58 +103,51 @@ void setup() {
 //*****************************************************************************
 
 void loop() {
-    // GET INFOS FROM TOUCH DISPLAY:
-    nextionLoop();
 
-    // DETECT IF MACHINE HAS BEEN SWITCHED ON:
-    if (machineRunning) {
-        if (machineRunning == !previousMachineState) {
-            timeout.setActive(machineRunning);
-            Serial.println("MACHINE SWITCHED ON");
-            previousMachineState=machineRunning;
-        }
+  // GET INFOS FROM TOUCH DISPLAY:
+  nextionLoop();
+
+  // DETECT IF MACHINE HAS BEEN SWITCHED ON:
+  if (machineRunning) {
+    if (machineRunning == !previousMachineState) {
+      timeout.setActive(machineRunning);
+      Serial.println("MACHINE SWITCHED ON");
+      previousMachineState = machineRunning;
     }
+  }
 
-    // DETECT IF MACHINE HAS BEEN SWITCHED OFF:
-        if (!machineRunning) {
-            if (machineRunning == !previousMachineState) {
-                timeout.setActive(machineRunning);
-                Serial.println("MACHINE SWITCHED OFF");
-                previousMachineState=machineRunning;
-            }
-        }
-
-
-    // SWITCH MOTOR ON AND OFF:
-    digitalWrite(MOTOR_RELAY_PIN, !machineRunning);
-
-    // GET SIGNAL FROM TEST SWITCH AND COUNT IT:
-    bool debouncedButtonState = testSwitch.requestButtonState();
-    if (previousButtonState != debouncedButtonState) {
-        if (debouncedButtonState == LOW) {
-            switchCounter.countOneUp(longTimeCounter);
-            updateDisplayCounter();
-            timeout.resetTime();
-            buttonBlinkEnabled = false;
-        }
-        previousButtonState = debouncedButtonState;
+  // DETECT IF MACHINE HAS BEEN SWITCHED OFF:
+  if (!machineRunning) {
+    if (machineRunning == !previousMachineState) {
+      timeout.setActive(machineRunning);
+      Serial.println("MACHINE SWITCHED OFF");
+      previousMachineState = machineRunning;
     }
+  }
 
-    //Serial.print("MACHINE STATE:");
-    //Serial.println(machineRunning);
+  // SWITCH MOTOR ON AND OFF:
+  digitalWrite(MOTOR_RELAY_PIN, !machineRunning);
 
-    // SWITCH OFF IF TIME-OUT IS REACHED
-    if (timeout.active()) { // returns true if timeout is active
-        if (timeout.timedOut()) { // returns true if timeout time has been reached
-            machineRunning = false;
-            buttonBlinkEnabled = true;
-            Serial.println("TIMEOUT-REACHED");
-        }
+  // GET SIGNAL FROM TEST SWITCH AND COUNT IT:
+  bool debouncedButtonState = testSwitch.requestButtonState();
+  if (previousButtonState != debouncedButtonState) {
+    if (debouncedButtonState == LOW) {
+      switchCounter.countOneUp(longTimeCounter);
+      updateDisplayCounter();
+      timeout.resetTime();
+      buttonBlinkEnabled = false;
     }
-    buttonBlink();
+    previousButtonState = debouncedButtonState;
+  }
 
-//runtime = millis() - runtimeStopwatch;
-//Serial.println(runtime);
-//runtimeStopwatch = millis();
-    //delay(500);
+  // SWITCH OFF IF TIME-OUT IS REACHED
+  if (timeout.active()) {
+    if (timeout.timedOut()) {
+      machineRunning = false;
+      buttonBlinkEnabled = true;
+      Serial.println("TIMEOUT-REACHED");
+    }
+  }
+  // LET THE DISPLAY BLINK IF THE TEST SWITCH FAILED:
+  buttonBlink(); // button blinks only if blink has been enabled
 }
