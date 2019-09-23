@@ -101,6 +101,7 @@ void setup() {
     pinMode(MOTOR_RELAY_PIN, OUTPUT);
     digitalWrite(MOTOR_RELAY_PIN, HIGH);
     nextionSetup();
+	timeout.setActive(false); // timeout will be set active later
     updateDisplayCounter();
     Serial.println("EXIT SETUP");
 }
