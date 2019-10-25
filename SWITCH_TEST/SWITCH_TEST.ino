@@ -16,7 +16,6 @@
 #include <EEPROM_Counter.h>  // https://github.com/chischte/eeprom-counter-library.git
 #include <Insomnia.h>        // https://github.com/chischte/insomnia-delay-library.git
 
-
 enum counter {
   longTimeCounter, // name of the counter
   endOfEnum //end of the counter list
@@ -26,10 +25,11 @@ int numberOfValues = endOfEnum;
 // DEFINE THE EEPROM SIZE OF YOUR BOARD:
 // EEPROM size Arduino Nano/Uno: 1024 bytes (ATmega328P)
 // EEPROM size Arduino Mega:     4096 bytes (ATmega2560)
-int eepromSize = 4096;
+int eepromMinAddress = 0;
+int eepromMaxAddress = 4095;
 
 // CREATE THE EEPROM COUNTER:
-EEPROM_Counter switchCounter(eepromSize, numberOfValues);
+EEPROM_Counter switchCounter(eepromMinAddress, eepromMaxAddress, numberOfValues);
 
 // CREATE THE TIMEOUT TIMER:
 Insomnia timeout(5000);
@@ -86,14 +86,14 @@ void buttonBlink() {
 //*****************######***######*****#*****######**#*************************
 //*****************************************************************************
 void setup() {
-    Serial.begin(9600); // start serial connection
-    pinMode(TEST_SWITCH_PIN, INPUT_PULLUP);
-    pinMode(MOTOR_RELAY_PIN, OUTPUT);
-    digitalWrite(MOTOR_RELAY_PIN, HIGH);
-    nextionSetup();
-	timeout.setActive(false); // timeout will be set active later
-    updateDisplayCounter();
-    Serial.println("EXIT SETUP");
+  Serial.begin(9600); // start serial connection
+  pinMode(TEST_SWITCH_PIN, INPUT_PULLUP);
+  pinMode(MOTOR_RELAY_PIN, OUTPUT);
+  digitalWrite(MOTOR_RELAY_PIN, HIGH);
+  nextionSetup();
+  timeout.setActive(false); // timeout will be set active later
+  updateDisplayCounter();
+  Serial.println("EXIT SETUP");
 }
 //*****************************************************************************
 //********************#*********#####***#####***######*************************
