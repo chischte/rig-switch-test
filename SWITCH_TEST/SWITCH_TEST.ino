@@ -29,7 +29,7 @@ int eepromMinAddress = 0;
 int eepromMaxAddress = 4095;
 
 // CREATE THE EEPROM COUNTER:
-EEPROM_Counter switchCounter(eepromMinAddress, eepromMaxAddress, numberOfValues);
+EEPROM_Counter switchCounter;
 
 // CREATE THE TIMEOUT TIMER:
 Insomnia timeout(5000);
@@ -86,6 +86,7 @@ void buttonBlink() {
 //*****************######***######*****#*****######**#*************************
 //*****************************************************************************
 void setup() {
+  switchCounter.setup(eepromMinAddress, eepromMaxAddress, numberOfValues);
   Serial.begin(9600); // start serial connection
   pinMode(TEST_SWITCH_PIN, INPUT_PULLUP);
   pinMode(MOTOR_RELAY_PIN, OUTPUT);
