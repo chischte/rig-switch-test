@@ -5,11 +5,24 @@
 class Display{
 
 private:
-void new_send_to_nextion();
+void send_to_nextion();
+void nex_switch_play_pausePushCallback(void *ptr);
 
 
 
 public:
+
+bool resetStopwatchActive = false;
+bool nextionPlayPauseButtonState;
+bool counterReseted = false;
+int currentPage = 0;
+unsigned long counterResetStopwatch;
+
+
+void updateDisplayCounter();
+
+
+
 Display();
 
 
