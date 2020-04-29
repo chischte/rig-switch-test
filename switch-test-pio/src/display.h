@@ -7,7 +7,7 @@ class Display{
 private:
 void send_to_nextion();
 void nex_switch_play_pausePushCallback(void *ptr);
-
+void nex_switch_play_pausePopCallback(void *ptr);
 
 
 public:
@@ -19,9 +19,9 @@ int currentPage = 0;
 unsigned long counterResetStopwatch;
 
 
+void nextionSetup();
 void updateDisplayCounter();
-
-
+void nextionLoop();
 
 Display();
 
