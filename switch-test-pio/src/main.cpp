@@ -17,6 +17,7 @@
 #include <Debounce.h>        // https://github.com/chischte/debounce-library.git
 #include <EEPROM_Counter.h>  // https://github.com/chischte/eeprom-counter-library.git
 #include <Insomnia.h>        // https://github.com/chischte/insomnia-delay-library.git
+#include "display.h"
 
 
 enum counter {
