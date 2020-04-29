@@ -10,6 +10,7 @@ Display::Display(){
 //*****************************************************************************
 // PAGE 0:
 NexDSButton nex_switch_play_pause = NexDSButton(0, 2, "bt0");
+  nex_switch_play_pause.attachPush(nex_switch_play_pausePushCallback);
 
 //Display::nextionSetup();
 
@@ -74,7 +75,7 @@ void Display::nextionSetup()
   // n.a.
 
   //*****PUSH+POP:
-  //nex_switch_play_pause.attachPush(nex_switch_play_pausePushCallback);
+
   //nex_switch_play_pause.attachPop(nex_switch_play_pausePopCallback);
 
   //*****************************************************************************
