@@ -48,7 +48,7 @@ Insomnia blinkDelay;
 // DECLARATION OF OBJECTS TO BE READ FROM NEXTION
 //*****************************************************************************
 // PAGE 0:
-NexDSButton nex_switch_play_pause = NexDSButton(0, 2, "bt0");
+//NexDSButton nex_switch_play_pause = NexDSButton(0, 2, "bt0");
 
 
 // KNOBS AND POTENTIOMETERS:
@@ -102,6 +102,7 @@ void setup() {
   display.nextionSetup();
   timeout.setActive(false); // timeout will be set active later
  display.updateDisplayCounter();
+ //display.nex_switch_play_pause.attachPush(nex_switch_play_pausePushCallback);
   Serial.println("EXIT SETUP");
 }
 //*****************************************************************************

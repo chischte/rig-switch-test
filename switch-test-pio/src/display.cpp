@@ -5,12 +5,21 @@
 // Constructor (Former Nextion Setup)
 Display::Display(){
 
+
+
+
+NexTouch *nex_listen_list[] = { &nex_switch_play_pause
+,NULL
+};
+
+}
+
 //*****************************************************************************
 // DECLARATION OF OBJECTS TO BE READ FROM NEXTION
 //*****************************************************************************
 // PAGE 0:
-NexDSButton nex_switch_play_pause = NexDSButton(0, 2, "bt0");
-  nex_switch_play_pause.attachPush(nex_switch_play_pausePushCallback);
+
+  
 
 //Display::nextionSetup();
 
@@ -18,12 +27,30 @@ NexDSButton nex_switch_play_pause = NexDSButton(0, 2, "bt0");
 // END OF OBJECT DECLARATION
 //*****************************************************************************
 
+void Display::createPushFunction(){
 
 
 
+
+//GEHT ABER FUNKTIONIERT WOHL NICHT DA FALSCHE WERTR:
+//nex_switch_play_pause.attachPush(0, 2);
+
+//SO HAT ES FRÜHER FUNKTIONERT, KOMPILIERT ABER NICHT:
+nex_switch_play_pause.attachPush(nex_switch_play_pausePushCallback);
+
+//SO GEHT ES AUCH NICHT:
+//nex_switch_play_pause.attachPush(Display::nex_switch_play_pausePushCallback);
+
+//VERSUCH MIT POINTER:
+//void* apointer;
+//nex_switch_play_pausePushCallback();
+//apointer=Display::nex_switch_play_pausePushCallback
+//nex_switch_play_pause.attachPush(a);
 
 
 }
+
+
 
 void Display::send_to_nextion() {
   Serial2.write(0xff);
