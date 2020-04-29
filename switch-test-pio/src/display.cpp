@@ -11,7 +11,7 @@ Display::Display(){
 // PAGE 0:
 NexDSButton nex_switch_play_pause = NexDSButton(0, 2, "bt0");
 
-Display::nextionSetup();
+//Display::nextionSetup();
 
 //*****************************************************************************
 // END OF OBJECT DECLARATION
