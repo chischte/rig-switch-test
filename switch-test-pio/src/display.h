@@ -9,9 +9,10 @@ void new_send_to_nextion();
 
 
 
+
 public:
 Display();
-
+static void nex_switch_play_pausePushCallback(void *ptr);
 
 };
 

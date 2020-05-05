@@ -40,6 +40,12 @@ Insomnia timeout(5000);
 
 // CREATE A BLINK DELAY:
 Insomnia blinkDelay;
+
+// CREATE A BLINK DELAY:
+Display display;
+
+
+
 //*****************************************************************************
 // DECLARATION OF VARIABLES
 //*****************************************************************************
@@ -178,7 +184,7 @@ void nextionSetup()
   // n.a.
 
   //*****PUSH+POP:
-  nex_switch_play_pause.attachPush(nex_switch_play_pausePushCallback);
+  nex_switch_play_pause.attachPush(display.nex_switch_play_pausePushCallback);
   nex_switch_play_pause.attachPop(nex_switch_play_pausePopCallback);
 
   //*****************************************************************************
